@@ -1,0 +1,6 @@
+.pio/build
+.pio/libdeps
+!.pio/libdeps/lv_conf.h
+
+.vscode
+src/codeWork.code-workspace
