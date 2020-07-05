@@ -81,10 +81,21 @@ void rotary_event_cb(lv_obj_t *obj, lv_event_t event)
 {
     lv_rotary_ext_t *ext = (lv_rotary_ext_t *)lv_obj_get_ext_attr(obj);
     lv_event_t e = event;
+    Serial.println(ext->threshold);
     if (event == LV_EVENT_VALUE_CHANGED)
     {
         Serial.println(ext->cur_value);
+        Serial.println(lv_rotary_get_angle_end(obj));
+    }
+    if (event == LV_EVENT_CLICKED)
+    {
+        Serial.println("clicked");
+    }
+    if (event == LV_EVENT_SHORT_CLICKED)
+    {
+        Serial.println("short clicked");
     }  
+
 }
 
 Display::Display() {}
@@ -129,39 +140,44 @@ void Display::render()
 {
     // Styles
     lv_style_init(&rotary_style);
-    lv_style_set_pad_top(&rotary_style, LV_STATE_DEFAULT, 0);
-    lv_style_set_pad_right(&rotary_style, LV_STATE_DEFAULT, 0);
-    lv_style_set_pad_bottom(&rotary_style, LV_STATE_DEFAULT, 0);
-    lv_style_set_pad_left(&rotary_style, LV_STATE_DEFAULT, 0);
+    lv_style_set_pad_inner(&rotary_style, LV_STATE_DEFAULT, 10);
 
     // Home
     pg = lv_page_create(NULL, NULL);
 
     lv_obj_t *rotary = lv_rotary_create(pg, NULL);
-    lv_obj_set_size(rotary, 70, 70);
+    lv_obj_set_size(rotary, 90, 90);
     lv_obj_align(rotary, pg, LV_ALIGN_IN_TOP_LEFT, 50, 50);
-    lv_rotary_set_range(rotary, ROTARY_MIN, ROTARY_MAX);
-    lv_rotary_set_value(rotary, 1000, LV_ANIM_OFF);
+    lv_rotary_set_range(rotary, -100, 100);
+    lv_rotary_set_value(rotary, 100, LV_ANIM_OFF);
     lv_obj_set_event_cb(rotary, rotary_event_cb);
     lv_group_add_obj(grp_en, rotary);
+    lv_rotary_set_sensitivity(rotary, 1);
+    lv_rotary_set_threshold(rotary, 10);
 
     lv_obj_t *rotary2 = lv_rotary_create(pg, NULL);
-    lv_obj_set_size(rotary2, 70, 70);
+    lv_obj_set_size(rotary2, 90, 90);
     lv_obj_align(rotary2, rotary, LV_ALIGN_OUT_RIGHT_TOP, 10, 0);
-    lv_rotary_set_range(rotary2, ROTARY_MIN, ROTARY_MAX);
-    lv_rotary_set_value(rotary2, 1000, LV_ANIM_OFF);
+    lv_rotary_set_range(rotary2, -100, 100);
+    lv_rotary_set_value(rotary2, 100, LV_ANIM_OFF);
     lv_obj_set_event_cb(rotary2, rotary_event_cb);
+    lv_rotary_set_sensitivity(rotary2, 1);
+    lv_rotary_set_threshold(rotary2, 180);
     lv_group_add_obj(grp_en, rotary2);
-    lv_rotary_set_state(rotary2, LV_ROTARY_STATE_CHECKED_DISABLED);
+    lv_rotary_set_type(rotary2, LV_ROTARY_TYPE_SYMMETRIC);
+    // lv_rotary_set_state(rotary2, LV_ROTARY_STATE_CHECKED_DISABLED);
 
     lv_obj_t *rotary3 = lv_rotary_create(pg, NULL);
     lv_obj_set_size(rotary3, 120, 120);
-    lv_obj_align(rotary3, rotary, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 10);
+    lv_obj_align(rotary3, rotary, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 10); 
     lv_rotary_set_range(rotary3, ROTARY_MIN, ROTARY_MAX);
     lv_rotary_set_value(rotary3, 1000, LV_ANIM_OFF);
     lv_obj_set_event_cb(rotary3, rotary_event_cb);
     lv_group_add_obj(grp_en, rotary3);
-    lv_rotary_set_state(rotary3, LV_ROTARY_STATE_PRESSED);
+    lv_rotary_set_sensitivity(rotary3, 10);
+    lv_rotary_set_threshold(rotary3, 500);
+    lv_rotary_set_type(rotary3, LV_ROTARY_TYPE_REVERSE);  
+    lv_obj_add_style(rotary3, LV_ROTARY_PART_KNOB, &rotary_style);
 
     // lv_obj_t *btn = lv_btn_create(pg, NULL);
     // lv_obj_set_size(btn, 70, 70);

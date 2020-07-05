@@ -28,8 +28,6 @@ void loop()
 
     if ((++heartBeat %= 600) == 0)
     {
-      Serial.println();
-      Serial.print("Value: ");
     }
     
     delay(2);
